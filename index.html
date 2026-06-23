@@ -6,32 +6,12 @@
 <title>video</title>
 
 <style>
-
-/* =========================
-   RESET COMPLET
-========================= */
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-/* =========================
-   BODY
-========================= */
 body{
+    margin:0;
     background:black;
     overflow:hidden;
-    width:100vw;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
 }
 
-/* =========================
-   VIDEO FULL SCREEN
-========================= */
 video{
     position:fixed;
     top:0;
@@ -39,89 +19,27 @@ video{
     width:100%;
     height:100%;
     object-fit:cover;
-    background:black;
 }
-
-/* =========================
-   OVERLAY (fallback click)
-========================= */
-#overlay{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:black;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:10;
-    color:white;
-    font-size:30px;
-    font-family:Arial;
-}
-
-.hidden{
-    display:none;
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- =========================
-     OVERLAY CLICK (si autoplay bloqué)
-========================= -->
-<div id="overlay">▶ tap pour lancer</div>
-
-<!-- =========================
-     VIDEO
-========================= -->
-<video id="video" loop playsinline muted>
+<video id="video" autoplay loop playsinline muted>
     <source src="2026-06-23-010114573.mp4" type="video/mp4">
 </video>
 
 <script>
-
 const video = document.getElementById("video");
-const overlay = document.getElementById("overlay");
 
-/* =========================
-   ESSAI AUTOPLAY
-========================= */
-async function startVideo(){
-    try{
+/* tente de forcer la lecture */
+window.addEventListener("load", async () => {
+    try {
         await video.play();
-        overlay.classList.add("hidden");
-    }catch(err){
-        console.log("autoplay bloqué");
+    } catch (e) {
+        console.log("autoplay bloqué par le navigateur");
     }
-}
-
-/* =========================
-   AU CHARGEMENT
-========================= */
-window.addEventListener("load", () => {
-    startVideo();
 });
-
-/* =========================
-   SI BROWSER BLOQUE → CLICK
-========================= */
-overlay.addEventListener("click", async () => {
-    video.muted = true; // important pour autoriser autoplay
-    await video.play();
-    overlay.classList.add("hidden");
-});
-
-/* =========================
-   DOUBLE SÉCURITÉ
-========================= */
-document.body.addEventListener("touchstart", () => {
-    video.play().catch(()=>{});
-}, { once:true });
-
 </script>
 
 </body>
